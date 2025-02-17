@@ -1,0 +1,12 @@
+specVersion: "v1beta"
+serviceId: "ugo-bakery-clone-main"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "ugo-bakery-clone-main-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]
