@@ -8,7 +8,7 @@ import { useCartStore } from "@/stores/useCartStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface NavbarProps {
-  isLoggedIn: boolean;
+  isLoggedIn?: boolean;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ isLoggedIn }) => {
@@ -21,9 +21,9 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn }) => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background shadow-sm">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <a href="/" className="text-2xl font-serif font-bold text-foreground">
-            Ugo Bakery
-          </a>
+        <a href="/" className="flex items-center">
+  <img src="/logo.png" alt="Ugo Bakery Logo" width="150" height="10" />
+</a>
 
           <div className="flex items-center gap-4">
             {isMobile ? (

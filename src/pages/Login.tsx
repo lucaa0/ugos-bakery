@@ -31,15 +31,31 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
       const user = userCredential.user;
       // console.log("User logged in:", user); // Replaced with toast
       toast.success("User logged in successfully!"); // Display success toast
-      setIsLoggedIn(true);
+      await setIsLoggedIn(true);
       navigate("/");
       // Redirect to another page or update UI here (e.g., using react-router's navigate)
     } catch (error: any) {
       // Handle errors (e.g., invalid credentials, user not found)
       // console.error("Login error:", error.message); // Replaced with toast
-      toast.error(error.message); // Display error toast
-      // setError(error.message); // No longer needed
-      // Update UI to show the error message (e.g., using a state variable and displaying it on the form) - No longer needed
+      let errorMessage = "Errore sconosciuto durante l'accesso.";
+      switch (error.code) {
+        case 'auth/invalid-email':
+          errorMessage = "Formato email non valido.";
+          break;
+        case 'auth/user-disabled':
+          errorMessage = "Questo utente è stato disabilitato.";
+          break;
+        case 'auth/user-not-found':
+          errorMessage = "Utente non trovato.";
+          break;
+        case 'auth/wrong-password':
+          errorMessage = "Password errata.";
+          break;
+        case 'auth/too-many-requests':
+          errorMessage = "Troppe richieste di accesso. Riprova più tardi.";
+          break;
+      }
+      toast.error(errorMessage);
     }
   };
 

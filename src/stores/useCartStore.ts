@@ -1,4 +1,3 @@
-
 import { create } from "zustand";
 
 interface CartItem {
@@ -16,6 +15,7 @@ interface CartStore {
   updateQuantity: (itemId: number, quantity: number) => void;
   getTotal: () => number;
   getTotalItems: () => number;
+  clearCart: () => void; // Added clearCart to the interface
 }
 
 export const useCartStore = create<CartStore>((set, get) => ({
@@ -55,5 +55,8 @@ export const useCartStore = create<CartStore>((set, get) => ({
   },
   getTotalItems: () => {
     return get().items.reduce((total, item) => total + item.quantity, 0);
+  },
+  clearCart: () => { // Added clearCart implementation
+    set({ items: [] });
   },
 }));

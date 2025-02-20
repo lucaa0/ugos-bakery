@@ -30,17 +30,31 @@ const Register: React.FC<RegisterProps> = ({ setIsLoggedIn }) => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       // User account created successfully
       const user = userCredential.user;
-      // console.log("User registered:", user); // Replaced with toast
+      console.log("User registered in Register.tsx:", user); // Added log, more specific
       toast.success("User registered successfully!");
-      setIsLoggedIn(true);
+      console.log("Before await setIsLoggedIn in Register.tsx"); // Added log, more specific
+      await setIsLoggedIn(true);
+      console.log("After await setIsLoggedIn in Register.tsx"); // Added log, more specific
       navigate("/");
       // Redirect to another page or update UI here
     } catch (error: any) {
       // Handle errors (e.g., email already in use, weak password)
-      // console.error("Registration error:", error.message); // Replaced with toast
-      toast.error(error.message);
-      // setError(error.message); // No longer needed
-      // Update UI to show error message - No longer needed
+      let errorMessage = "Errore sconosciuto durante la registrazione.";
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          errorMessage = "Questo indirizzo email è già in uso.";
+          break;
+        case 'auth/invalid-email':
+          errorMessage = "Formato email non valido.";
+          break;
+        case 'auth/weak-password':
+          errorMessage = "La password deve contenere almeno 6 caratteri.";
+          break;
+        case 'auth/operation-not-allowed':
+          errorMessage = "Registrazione non abilitata.";
+          break;
+      }
+      toast.error(errorMessage);
     }
   };
 

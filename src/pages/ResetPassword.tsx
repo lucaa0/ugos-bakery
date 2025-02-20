@@ -33,10 +33,16 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isLoggedIn }) => {
       // Update UI to show success message - No longer needed
     } catch (error: any) {
       // Handle errors (e.g., invalid email, user not found)
-      // console.error("Password reset error:", error.message); // Replaced with toast
-      toast.error(error.message);
-      // setError(error.message); // No longer needed
-      // Update UI to show error message - No longer needed
+      let errorMessage = "Errore sconosciuto durante il ripristino della password.";
+      switch (error.code) {
+        case 'auth/invalid-email':
+          errorMessage = "Formato email non valido.";
+          break;
+        case 'auth/user-not-found':
+          errorMessage = "Utente non trovato.";
+          break;
+      }
+      toast.error(errorMessage);
     }
   };
 
