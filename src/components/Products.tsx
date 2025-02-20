@@ -12,14 +12,14 @@ const products = [
     name: "Pane Artigianale",
     description: "Lievitazione naturale, farine selezionate",
     price: 4.50,
-    image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=2072&auto=format&fit=crop"
+    image: "/assets/ee6db9ba-b67f-4a36-8f8b-2c2a72a3c284.png"
   },
   {
     id: 2,
     name: "Focaccia Genovese",
     description: "Olio extravergine e sale marino",
     price: 3.80,
-    image: "https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?q=80&w=2070&auto=format&fit=crop"
+    image: "/assets/a4c6bb80-0a12-46bb-954c-981ccff5257a.png"
   },
   {
     id: 3,
