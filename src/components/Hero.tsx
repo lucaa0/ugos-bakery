@@ -21,7 +21,7 @@ const Hero = () => {
           transition={{ duration: 0.8 }}
           className="text-4xl md:text-6xl lg:text-7xl font-serif font-bold text-white mb-6"
         >
-          Benvenuti a Ugo Bakery
+          Panificio & Pasticceria Artigianale
         </motion.h1>
         
         <motion.p
