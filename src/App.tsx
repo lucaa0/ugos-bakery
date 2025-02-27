@@ -7,8 +7,9 @@ import ResetPassword from "./pages/ResetPassword";
 import Cart from "./pages/Cart";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard";
 import { useState, useEffect } from 'react';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth'; // Import User type
 import { app } from './lib/firebase';
 import Navbar from "./components/Navbar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -19,35 +20,32 @@ import ErrorBoundary from "./components/ErrorBoundary";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null); // Initialize as null
+  const [user, setUser] = useState<User | null>(null); // Use User type
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
   const auth = getAuth(app);
 
   useEffect(() => {
+    const storedUID = localStorage.getItem('userUID');
+    const storedEmail = localStorage.getItem('userEmail');
+    if (storedUID) {
+      // Simulate a user object.  Ideally, you'd fetch user data from Firebase.
+      setUser({ uid: storedUID, email: storedEmail } as User);
+      setIsLoading(false);
+    }
+
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      console.log("onAuthStateChanged in App.tsx, user:", user); // Added log
-      setIsLoggedIn(!!user);
+      console.log("onAuthStateChanged in App.tsx, user:", user);
+      console.log("onAuthStateChanged in App.tsx, !!user:", !!user);
+      setUser(user);
+      console.log("setUser in App.tsx, user:", user);
+      setIsLoading(false); // Set loading to false after user is set
     });
 
     return () => unsubscribe();
   }, [auth]);
 
-  // Define a wrapper function for setIsLoggedIn
-  const setAuthStatus = (status: boolean) => {
-    return new Promise<void>((resolve) => {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        console.log("setAuthStatus in App.tsx, status:", status, "!!user:", !!user); // Added log
-        if (!!user === status) {
-          setIsLoggedIn(status);
-          unsubscribe();
-          resolve();
-        }
-      });
-    });
-  };
-
-
-  if (isLoggedIn === null) {
-    return null; // Or a loading spinner
+  if (isLoading) {
+    return null; // Or a loading spinner/indicator
   }
 
   return (
@@ -55,19 +53,18 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <BrowserRouter>
-          <Navbar isLoggedIn={isLoggedIn} />
-          {/* <ErrorBoundary> */}
-            <Routes>
-              <Route path="/" element={<Index isLoggedIn={isLoggedIn} />} />
-              <Route path="/menu" element={<Menu isLoggedIn={isLoggedIn} />} />
-              <Route path="/login" element={<Login setIsLoggedIn={setAuthStatus} />} />
-              <Route path="/register" element={<Register setIsLoggedIn={setAuthStatus}/>} />
-              <Route path="/reset-password" element={<ResetPassword isLoggedIn={isLoggedIn} />} />
-              <Route path="/cart" element={isLoggedIn ? <Cart isLoggedIn={isLoggedIn} /> : <Navigate to="/login" />} />
-              <Route path="/profile" element={<Profile isLoggedIn={isLoggedIn} />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          {/* </ErrorBoundary> */}
+        { !isLoading && <Navbar key={user ? user.uid : undefined} userEmail={user?.email || null} />}
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/menu" element={<Menu />} />
+            <Route path="/login" element={<Login  />} />
+            <Route path="/register" element={<Register  />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/cart" element={!!user ? <Cart /> : <Navigate to="/login" />} />
+            <Route path="/profile" element={!!user ? <Profile uid={user?.uid} /> : <Navigate to="/login" />} />
+            <Route path="/dashboard" element={!!user ? <Dashboard /> : <Navigate to="/" />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>

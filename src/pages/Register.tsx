@@ -8,12 +8,9 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { getFirestore, doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
 
-interface RegisterProps {
-  setIsLoggedIn: (value: boolean) => void;
-}
-
-const Register: React.FC<RegisterProps> = ({ setIsLoggedIn }) => {
+const Register: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,17 +25,23 @@ const Register: React.FC<RegisterProps> = ({ setIsLoggedIn }) => {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      // User account created successfully
       const user = userCredential.user;
-      console.log("User registered in Register.tsx:", user); // Added log, more specific
+      console.log("User registered in Register.tsx:", user);
       toast.success("User registered successfully!");
-      console.log("Before await setIsLoggedIn in Register.tsx"); // Added log, more specific
-      await setIsLoggedIn(true);
-      console.log("After await setIsLoggedIn in Register.tsx"); // Added log, more specific
+
+      // Create a document in Firestore for the new user
+      const db = getFirestore(app);
+      await setDoc(doc(db, "users", user.uid), {
+        name: name,
+        email: email,
+        phone: "", // Initialize phone to empty string
+        address: "", // Initialize address to empty string
+      });
+
+      console.log("Before await setIsLoggedIn in Register.tsx");
+      console.log("After await setIsLoggedIn in Register.tsx");
       navigate("/");
-      // Redirect to another page or update UI here
     } catch (error: any) {
-      // Handle errors (e.g., email already in use, weak password)
       let errorMessage = "Errore sconosciuto durante la registrazione.";
       switch (error.code) {
         case 'auth/email-already-in-use':

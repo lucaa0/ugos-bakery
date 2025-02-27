@@ -3,20 +3,16 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Minus, Plus, X, Truck, CreditCard } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCartStore } from "@/stores/useCartStore";
 import { motion, AnimatePresence } from "framer-motion";
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, doc, getDoc } from 'firebase/firestore';
 import { app } from '@/lib/firebase';
 import { toast } from "@/components/ui/use-toast";
 import { getAuth } from 'firebase/auth';
 import { sendOrderEmails } from '@/lib/sendgrid';
 
-interface CartProps {
-  isLoggedIn: boolean;
-}
-
-const Cart: React.FC<CartProps> = () => {
+const Cart: React.FC = () => {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isCheckoutSuccessful, setIsCheckoutSuccessful] = useState(false); // New state for success
   const [loading, setLoading] = useState(false); //loading state
@@ -36,6 +32,35 @@ const Cart: React.FC<CartProps> = () => {
   const [cardNumber, setCardNumber] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
+
+    useEffect(() => {
+    const fetchUserData = async () => {
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      try {
+        await auth.authStateReady();
+        const user = auth.currentUser;
+        if (user) {
+          const docRef = doc(db, "users", user.uid);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setName(data.name || '');
+            setAddress(data.address || '');
+            setPhone(data.phone || '');
+            setEmail(data.email || ''); // Set email
+            // Assuming 'surname' is not in profile, leave it empty or fetch from elsewhere
+          }
+        }
+      } catch (error: any) {
+        console.error("Error fetching user data:", error);
+        // Optionally show an error message to the user
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleCheckout = async () => {
     setLoading(true);

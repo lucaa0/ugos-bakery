@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
@@ -7,21 +6,17 @@ import Products from "@/components/Products";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
-interface IndexProps {
-  isLoggedIn: boolean;
-}
-
-const Index: React.FC<IndexProps> = ({ isLoggedIn }) => {
+const Index: React.FC = () => {
   useEffect(() => {
     const smoothScroll = (e: Event) => {
       e.preventDefault();
       const target = e.target as HTMLAnchorElement;
       const id = target.getAttribute("href");
       if (!id || !id.startsWith("#")) return;
-      
+
       const element = document.querySelector(id);
       if (!element) return;
-      
+
       element.scrollIntoView({
         behavior: "smooth",
         block: "start",
@@ -41,7 +36,7 @@ const Index: React.FC<IndexProps> = ({ isLoggedIn }) => {
 
   return (
     <main className="min-h-screen">
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar  />
       <Hero />
       <div id="chi-siamo"><About /></div>
       <Products />

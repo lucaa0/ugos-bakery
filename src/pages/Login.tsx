@@ -9,11 +9,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 
-interface LoginProps {
-  setIsLoggedIn: (value: boolean) => void;
-}
-
-const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
+const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -27,11 +23,12 @@ const Login: React.FC<LoginProps> = ({ setIsLoggedIn }) => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      // User signed in successfully
+      // User is signed in successfully
       const user = userCredential.user;
       // console.log("User logged in:", user); // Replaced with toast
       toast.success("User logged in successfully!"); // Display success toast
-      await setIsLoggedIn(true);
+      localStorage.setItem('userUID', user.uid); // Store user UID
+      localStorage.setItem('userEmail', user.email || ''); // Store user email
       navigate("/");
       // Redirect to another page or update UI here (e.g., using react-router's navigate)
     } catch (error: any) {

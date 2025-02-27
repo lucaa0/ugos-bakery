@@ -16,5 +16,9 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true; // Temporarily allow unconditional writes
     }
-  }
-}
+    match /users/{userId} {
+          allow create: if request.auth != null && request.auth.uid == userId;
+          allow read, update: if request.auth != null && request.auth.uid == userId;
+        }
+      }
+    }

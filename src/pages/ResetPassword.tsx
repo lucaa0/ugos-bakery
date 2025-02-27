@@ -8,11 +8,7 @@ import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-interface ResetPasswordProps {
-  isLoggedIn: boolean;
-}
-
-const ResetPassword: React.FC<ResetPasswordProps> = ({ isLoggedIn }) => {
+const ResetPassword: React.FC = () => {
   const [email, setEmail] = useState('');
   // const [error, setError] = useState(''); // No longer needed
   // const [message, setMessage] = useState(''); // No longer needed
@@ -48,7 +44,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = ({ isLoggedIn }) => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar />
       <main className="flex-1 flex items-center justify-center pt-24">
         <div className="w-full max-w-md p-6">
           <h1 className="text-3xl font-serif font-bold text-center mb-8">

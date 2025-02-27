@@ -16,11 +16,7 @@ interface MenuItem {
   image: string;
 }
 
-interface MenuProps {
-  isLoggedIn: boolean;
-}
-
-const Menu: React.FC<MenuProps> = ({ isLoggedIn }) => {
+const Menu: React.FC = () => {
   const addItem = useCartStore((state) => state.addItem);
   const { toast } = useToast();
 
@@ -122,7 +118,7 @@ const Menu: React.FC<MenuProps> = ({ isLoggedIn }) => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar  />
       <main className="flex-1 pt-24">
         <div className="container mx-auto px-6 py-12">
           <div className="text-center mb-12">
